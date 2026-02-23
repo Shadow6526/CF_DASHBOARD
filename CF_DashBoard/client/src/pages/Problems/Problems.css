@@ -1,0 +1,154 @@
+/* ═══════════════════════════════════════════════
+   Problems Page
+   ═══════════════════════════════════════════════ */
+.problems-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+}
+
+/* Toolbar */
+.problems-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.diff-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.diff-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.diff-select {
+    width: 100px;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* Tag Filters */
+.tag-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.tag-pill {
+    padding: 5px 14px;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.tag-pill:hover {
+    border-color: var(--border-accent);
+    color: var(--text-primary);
+    background: rgba(99, 102, 241, 0.06);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+}
+
+.tag-pill.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: var(--primary-300);
+}
+
+.results-count {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+/* Problem table cells */
+.problem-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.problem-name-link {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.problem-name-link:hover {
+    color: var(--primary-300);
+    text-shadow: 0 0 10px rgba(129, 140, 248, 0.3);
+}
+
+.difficulty-badge {
+    display: inline-flex;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.problem-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.bookmark-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+}
+
+.bookmark-btn:hover {
+    color: #fbbf24;
+    transform: scale(1.25);
+    text-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.3));
+}
+
+.bookmark-btn.active {
+    color: #fbbf24;
+}
+
+.bookmark-btn.active svg {
+    fill: #fbbf24;
+}
+
+@media (max-width: 768px) {
+    .problems-toolbar {
+        flex-direction: column;
+    }
+
+    .diff-filter {
+        flex-wrap: wrap;
+    }
+
+    .problem-tags {
+        display: none;
+    }
+}
