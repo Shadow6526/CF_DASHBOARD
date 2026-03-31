@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+    }
+
+    .stat-icon.blue {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .stat-icon.purple {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    .stat-icon.green {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .stat-info h3 {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .stat-info p {
+        margin: 4px 0 0;
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-issued {
+        background: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+    }
+
+    .status-returned {
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <h1 style="margin-top: 0; margin-bottom: 24px;">Overview</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card glass-panel">
+            <div class="stat-icon blue">
+                <i class="fa-solid fa-book"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ total_books }}</h3>
+                <p>Total Books</p>
+            </div>
+        </div>
+
+        <div class="stat-card glass-panel">
+            <div class="stat-icon purple">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ total_users }}</h3>
+                <p>Total Members</p>
+            </div>
+        </div>
+
+        <div class="stat-card glass-panel">
+            <div class="stat-icon green">
+                <i class="fa-solid fa-swatchbook"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ active_issues }}</h3>
+                <p>Active Issues</p>
+            </div>
+        </div>
+
+        <div class="stat-card glass-panel">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ pending_users }}</h3>
+                <p>Pending Approvals</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card glass-panel">
+        <h2>Recent Issues</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Book Title</th>
+                        <th>Student Name</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Fine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in recent_issues %}
+                    <tr>
+                        <td>#{{ issue.id }}</td>
+                        <td>{{ issue.title }}</td>
+                        <td>{{ issue.username }}</td>
+                        <td>{{ issue.issue_date.split(' ')[0] }}</td>
+                        <td>{{ issue.due_date.split(' ')[0] }}</td>
+                        <td>
+                            <span
+                                class="status-badge {% if issue.status == 'issued' %}status-issued{% else %}status-returned{% endif %}">
+                                {{ issue.status }}
+                            </span>
+                        </td>
+                        <td>${{ "%.2f"|format(issue.fine) }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted);">No recent issues found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

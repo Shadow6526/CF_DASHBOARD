@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Books{% endblock %}
+
+{% block content %}
+<div class="card glass-panel" style="margin-bottom: 24px;">
+    <h2>Add New Book</h2>
+    <form method="POST" action="{{ url_for('manage_books') }}"
+        style="display: grid; grid-template-columns: 1fr 1fr 1fr 100px auto; gap: 16px; align-items: end;">
+        <input type="hidden" name="action" value="add">
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label>Title</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+            <label>Author</label>
+            <input type="text" name="author" class="form-control" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+            <label>ISBN</label>
+            <input type="text" name="isbn" class="form-control" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+            <label>Copies</label>
+            <input type="number" name="copies" class="form-control" min="1" value="1" required>
+        </div>
+        <button type="submit" class="btn" style="height: 44px;"><i class="fa-solid fa-plus"></i> Add</button>
+    </form>
+</div>
+
+<div class="card glass-panel">
+    <h2>Book Inventory</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Total</th>
+                    <th>Avail.</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.id }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.isbn }}</td>
+                    <td>{{ book.total_copies }}</td>
+                    <td><strong>{{ book.available_copies }}</strong></td>
+                    <td style="display: flex; gap: 8px;">
+                        <!-- Edit Button triggers modal -->
+                        <button class="btn" style="padding: 6px 12px; font-size: 13px;"
+                            onclick="openEditModal({{ book.id }}, '{{ book.title }}', '{{ book.author }}', '{{ book.isbn }}', {{ book.total_copies }})">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </button>
+                        <!-- Delete Form -->
+                        <form method="POST" action="{{ url_for('manage_books') }}" style="margin: 0;">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="book_id" value="{{ book.id }}">
+                            <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 13px;"
+                                onclick="return confirm('Are you sure?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted);">No books available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="glass-panel" style="padding: 32px; max-width: 500px; width: 90%;">
+        <h2 style="margin-top: 0;">Edit Book</h2>
+        <form method="POST" action="{{ url_for('manage_books') }}">
+            <input type="hidden" name="action" value="edit">
+            <input type="hidden" name="book_id" id="edit-book-id">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" id="edit-title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Author</label>
+                <input type="text" name="author" id="edit-author" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>ISBN</label>
+                <input type="text" name="isbn" id="edit-isbn" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Copies</label>
+                <input type="number" name="copies" id="edit-copies" class="form-control" min="1" required>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button type="submit" class="btn">Save Changes</button>
+                <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditModal(id, title, author, isbn, copies) {
+        document.getElementById('edit-book-id').value = id;
+        document.getElementById('edit-title').value = title;
+        document.getElementById('edit-author').value = author;
+        document.getElementById('edit-isbn').value = isbn;
+        document.getElementById('edit-copies').value = copies;
+        document.getElementById('editModal').style.display = 'flex';
+    }
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+    // Close modal when clicking outside
+    document.getElementById('editModal').addEventListener('click', function (e) {
+        if (e.target === this) closeEditModal();
+    });
+</script>
+{% endblock %}

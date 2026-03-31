@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <h1 style="margin-top: 0; margin-bottom: 24px;">My Library Dashboard</h1>
+
+    <div class="card glass-panel" style="margin-bottom: 24px;">
+        <h2>My Issued Books</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Author</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Fine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                    <tr>
+                        <td><strong>{{ issue.title }}</strong></td>
+                        <td>{{ issue.author }}</td>
+                        <td>{{ issue.issue_date.split(' ')[0] }}</td>
+                        <td>{{ issue.due_date.split(' ')[0] }}</td>
+                        <td>
+                            <span style="font-size: 12px; padding: 4px 10px; border-radius: 12px; display: inline-block;
+                                {% if issue.status == 'issued' %} background: rgba(239, 68, 68, 0.2); color: #f87171; 
+                                {% else %} background: rgba(16, 185, 129, 0.2); color: #34d399; {% endif %}">
+                                {{ issue.status|upper }}
+                            </span>
+                        </td>
+                        <td style="color: {% if issue.fine > 0 %}#f87171{% else %}inherit{% endif %};">
+                            ${{ "%.2f"|format(issue.fine) }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted);">You have no issued books.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Search Books</h2>
+            <form method="GET" action="{{ url_for('student_dashboard') }}" style="display: flex; gap: 8px;">
+                <input type="text" name="q" value="{{ query }}" class="form-control"
+                    placeholder="Search by title or author..." style="width: 250px; padding: 8px 12px;">
+                <button type="submit" class="btn" style="padding: 8px 16px;"><i
+                        class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Availability</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td><strong>{{ book.title }}</strong></td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td>
+                            {% if book.available_copies > 0 %}
+                            <span style="color: #34d399;"><i class="fa-solid fa-check"></i> Available ({{
+                                book.available_copies }} copies)</span>
+                            {% else %}
+                            <span style="color: #f87171;"><i class="fa-solid fa-xmark"></i> Not Available</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if book.available_copies > 0 %}
+                            <form method="POST" action="{{ url_for('student_issue_book') }}" style="margin: 0;">
+                                <input type="hidden" name="book_id" value="{{ book.id }}">
+                                <button type="submit" class="btn"
+                                    style="padding: 4px 12px; font-size: 13px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3);">Issue</button>
+                            </form>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-muted);">No books found matching
+                            your query.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

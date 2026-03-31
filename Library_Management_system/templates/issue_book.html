@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Issue Books{% endblock %}
+
+{% block content %}
+<div class="card glass-panel">
+    <h2>Issue a Book</h2>
+    <form method="POST" action="{{ url_for('issue_book') }}" style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="form-group" style="margin-bottom: 0;">
+            <label>Select Student</label>
+            <select name="user_id" class="form-control" required style="padding: 14px;">
+                <option value="">-- Choose Student --</option>
+                {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label>Select Book</label>
+            <select name="book_id" class="form-control" required style="padding: 14px;">
+                <option value="">-- Choose Book --</option>
+                {% for book in books %}
+                <option value="{{ book.id }}">{{ book.title }} by {{ book.author }} (Avail: {{ book.available_copies }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn" style="height: 50px; font-size: 16px; margin-top: 10px;">
+            <i class="fa-solid fa-hand-holding-hand"></i> Complete Issue
+        </button>
+    </form>
+</div>
+{% endblock %}

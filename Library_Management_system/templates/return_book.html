@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Return Books{% endblock %}
+
+{% block content %}
+<div class="card glass-panel">
+    <h2>Return a Book</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue ID</th>
+                    <th>Book Title</th>
+                    <th>Student Name</th>
+                    <th>Due Date</th>
+                    <th>Current Fine</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                <tr>
+                    <td>#{{ issue.id }}</td>
+                    <td>{{ issue.title }}</td>
+                    <td>{{ issue.username }}</td>
+                    <td>{{ issue.due_date.split(' ')[0] }}</td>
+                    <td style="color: {% if issue.fine > 0 %}#f87171{% else %}#34d399{% endif %}; font-weight: bold;">
+                        ${{ "%.2f"|format(issue.fine) }}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('return_book') }}" style="margin: 0;">
+                            <input type="hidden" name="issue_id" value="{{ issue.id }}">
+                            <button type="submit" class="btn"
+                                style="padding: 6px 12px; font-size: 13px; background: var(--accent-green);">
+                                <i class="fa-solid fa-rotate-left"></i> Accept Return
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted);">No active issues currently.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
