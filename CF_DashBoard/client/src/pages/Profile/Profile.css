@@ -481,3 +481,111 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Heatmap Year Dropdown & Month Differentiation */
+.heatmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.year-dropdown {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    font-family: inherit;
+}
+
+.year-dropdown:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.year-dropdown:focus {
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.year-dropdown option {
+    background: #0f1420;
+    color: var(--text-primary);
+}
+
+/* Heatmap Month Blocks Grid Wrapper */
+.heatmap-months-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px 0;
+    overflow-x: auto;
+}
+
+.heatmap-months-container {
+    display: flex;
+    gap: 16px; /* Space between each month */
+    align-items: flex-start;
+    padding-bottom: 8px;
+}
+
+.heatmap-month-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.heatmap-month-calendar {
+    display: flex;
+    justify-content: center;
+}
+
+.heatmap-month-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-family: inherit;
+    text-transform: capitalize;
+}
+
+/* Heatmap Footer Styles */
+.heatmap-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.heatmap-count {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.legend-block {
+    width: 13px;
+    height: 13px;
+    border-radius: 2px;
+}

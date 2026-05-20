@@ -16,7 +16,7 @@
     font-size: 48px;
     color: var(--primary-400);
     margin-bottom: 20px;
-    filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.4));
+    filter: drop-shadow(0 0 15px rgba(229, 169, 59, 0.4));
 }
 
 .compare-hero h1 {
@@ -193,7 +193,7 @@
 
 .compare-val.winner {
     color: var(--primary-400);
-    text-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    text-shadow: 0 0 15px rgba(229, 169, 59, 0.4);
     transform: scale(1.05);
 }
 

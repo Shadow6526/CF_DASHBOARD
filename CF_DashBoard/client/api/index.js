@@ -49,13 +49,11 @@ app.get("/api/user/:handle/rating", async (req, res) => {
 // ── GET /api/user/:handle/submissions ──
 app.get("/api/user/:handle/submissions", async (req, res) => {
     try {
-        const count = parseInt(req.query.count) || 100;
-        const from = parseInt(req.query.from) || 1;
-        const data = await cfFetch("user.status", {
-            handle: req.params.handle,
-            from,
-            count,
-        });
+        const params = { handle: req.params.handle };
+        if (req.query.count) params.count = parseInt(req.query.count);
+        if (req.query.from) params.from = parseInt(req.query.from);
+        
+        const data = await cfFetch("user.status", params);
         res.json({ status: "OK", result: data });
     } catch (err) {
         res.status(err.response?.status || 500).json({

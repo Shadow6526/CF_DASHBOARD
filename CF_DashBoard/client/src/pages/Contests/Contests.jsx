@@ -49,9 +49,17 @@ export default function Contests() {
         setPage(1);
     }, [filter, search]);
 
-    const upcoming = contests.filter((c) => c.phase === "BEFORE").length;
-    const running = contests.filter((c) => c.phase === "CODING").length;
-    const finished = contests.filter((c) => c.phase === "FINISHED").length;
+    // Single-pass phase counts instead of 3 separate .filter() calls
+    const { upcoming, running, finished } = useMemo(() => {
+        let upcoming = 0, running = 0, finished = 0;
+        for (let i = 0; i < contests.length; i++) {
+            const phase = contests[i].phase;
+            if (phase === "BEFORE") upcoming++;
+            else if (phase === "CODING") running++;
+            else if (phase === "FINISHED") finished++;
+        }
+        return { upcoming, running, finished };
+    }, [contests]);
 
     if (loading) {
         return (

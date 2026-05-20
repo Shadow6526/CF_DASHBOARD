@@ -150,7 +150,7 @@ export default function Dashboard() {
                 const p = userProfiles[activeH];
                 if (!p) return null;
                 const statCards = [
-                    { label: "Current Rating", value: p.rating || 0, icon: <FiTrendingUp />, color: "#00d4ff" },
+                    { label: "Current Rating", value: p.rating || 0, icon: <FiTrendingUp />, color: "#e5a93b" },
                     { label: "Max Rating", value: p.maxRating || 0, icon: <FiAward />, color: "#34d399" },
                     { label: "Contribution", value: p.contribution || 0, icon: <FiStar />, color: "#f59e0b" },
                     { label: "Friends", value: p.friendOfCount || 0, icon: <FiUsers />, color: "#f87171" },

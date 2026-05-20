@@ -73,22 +73,24 @@ export function formatDuration(seconds) {
 }
 
 // ── Verdict mapping ──
+const VERDICT_MAP = {
+    OK: { label: "Accepted", color: "#10b981", short: "AC" },
+    WRONG_ANSWER: { label: "Wrong Answer", color: "#ef4444", short: "WA" },
+    TIME_LIMIT_EXCEEDED: { label: "TLE", color: "#f59e0b", short: "TLE" },
+    MEMORY_LIMIT_EXCEEDED: { label: "MLE", color: "#f97316", short: "MLE" },
+    RUNTIME_ERROR: { label: "Runtime Error", color: "#e11d48", short: "RE" },
+    COMPILATION_ERROR: { label: "Compilation Error", color: "#8b5cf6", short: "CE" },
+    CHALLENGED: { label: "Challenged", color: "#ec4899", short: "CH" },
+    SKIPPED: { label: "Skipped", color: "#64748b", short: "SK" },
+    TESTING: { label: "Testing", color: "#06b6d4", short: "..." },
+    PARTIAL: { label: "Partial", color: "#eab308", short: "PT" },
+    PRESENTATION_ERROR: { label: "Presentation Error", color: "#a855f7", short: "PE" },
+    IDLENESS_LIMIT_EXCEEDED: { label: "ILE", color: "#f59e0b", short: "ILE" },
+};
+const VERDICT_FALLBACK = { label: "Unknown", color: "#64748b", short: "?" };
+
 export function getVerdictInfo(verdict) {
-    const map = {
-        OK: { label: "Accepted", color: "#10b981", short: "AC" },
-        WRONG_ANSWER: { label: "Wrong Answer", color: "#ef4444", short: "WA" },
-        TIME_LIMIT_EXCEEDED: { label: "TLE", color: "#f59e0b", short: "TLE" },
-        MEMORY_LIMIT_EXCEEDED: { label: "MLE", color: "#f97316", short: "MLE" },
-        RUNTIME_ERROR: { label: "Runtime Error", color: "#e11d48", short: "RE" },
-        COMPILATION_ERROR: { label: "Compilation Error", color: "#8b5cf6", short: "CE" },
-        CHALLENGED: { label: "Challenged", color: "#ec4899", short: "CH" },
-        SKIPPED: { label: "Skipped", color: "#64748b", short: "SK" },
-        TESTING: { label: "Testing", color: "#06b6d4", short: "..." },
-        PARTIAL: { label: "Partial", color: "#eab308", short: "PT" },
-        PRESENTATION_ERROR: { label: "Presentation Error", color: "#a855f7", short: "PE" },
-        IDLENESS_LIMIT_EXCEEDED: { label: "ILE", color: "#f59e0b", short: "ILE" },
-    };
-    return map[verdict] || { label: verdict || "Unknown", color: "#64748b", short: "?" };
+    return VERDICT_MAP[verdict] || { label: verdict || "Unknown", color: VERDICT_FALLBACK.color, short: VERDICT_FALLBACK.short };
 }
 
 // ── Problem difficulty color (official Codeforces rank colors) ──

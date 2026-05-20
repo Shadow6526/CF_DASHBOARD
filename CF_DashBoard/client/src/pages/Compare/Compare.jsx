@@ -34,8 +34,8 @@ export default function Compare() {
                 fetchUserInfo(h2),
                 fetchUserRating(h1),
                 fetchUserRating(h2),
-                fetchUserSubmissions(h1, 10000), // Reduce payload for faster compare
-                fetchUserSubmissions(h2, 10000)
+                fetchUserSubmissions(h1), // Fetch lifetime data
+                fetchUserSubmissions(h2)  // Fetch lifetime data
             ]);
 
             const p1Stats = processStats(sub1Data, rating1Data);
@@ -53,20 +53,30 @@ export default function Compare() {
     }
 
     function processStats(submissions, ratingHistory) {
-        const accepted = submissions.filter((s) => s.verdict === "OK");
-        const solvedSet = new Set(accepted.map((s) => `${s.problem.contestId}-${s.problem.index}`));
-        const acceptRate = submissions.length ? ((accepted.length / submissions.length) * 100).toFixed(1) : 0;
+        const solvedSet = new Set();
+        let acceptedCount = 0;
+        const len = submissions.length;
+
+        for (let i = 0; i < len; i++) {
+            const s = submissions[i];
+            if (s.verdict === "OK") {
+                acceptedCount++;
+                solvedSet.add(`${s.problem.contestId}-${s.problem.index}`);
+            }
+        }
+
+        const acceptRate = len ? ((acceptedCount / len) * 100).toFixed(1) : 0;
 
         let maxUp = 0;
         let maxDown = 0;
-        ratingHistory.forEach((r) => {
-            const diff = r.newRating - r.oldRating;
+        for (let i = 0; i < ratingHistory.length; i++) {
+            const diff = ratingHistory[i].newRating - ratingHistory[i].oldRating;
             if (diff > maxUp) maxUp = diff;
             if (diff < maxDown) maxDown = diff;
-        });
+        }
 
         return {
-            totalSubmissions: submissions.length,
+            totalSubmissions: len,
             solved: solvedSet.size,
             acceptRate: parseFloat(acceptRate),
             maxUp,

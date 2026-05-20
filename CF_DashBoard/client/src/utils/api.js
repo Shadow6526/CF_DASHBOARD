@@ -19,10 +19,11 @@ export const fetchUserRating = async (handle) => {
     return res.data.result;
 };
 
-export const fetchUserSubmissions = async (handle, count = 500) => {
-    const res = await api.get(`/user/${handle}/submissions`, {
-        params: { count },
-    });
+export const fetchUserSubmissions = async (handle, count) => {
+    const params = {};
+    if (count) params.count = count;
+    
+    const res = await api.get(`/user/${handle}/submissions`, { params });
     return res.data.result;
 };
 
