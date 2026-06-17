@@ -28,12 +28,13 @@ export function getRankName(rating) {
 }
 
 export function getRankBadgeClass(rating) {
-    if (!rating || rating < 1200) return "badge-secondary";
-    if (rating < 1400) return "badge-success";
-    if (rating < 1600) return "badge-info";
-    if (rating < 1900) return "badge-primary";
-    if (rating < 2100) return "badge-warning";
-    return "badge-danger";
+    if (!rating || rating < 1200) return "badge-secondary";   // Newbie
+    if (rating < 1400) return "badge-success";                // Pupil
+    if (rating < 1600) return "badge-info";                   // Specialist
+    if (rating < 1900) return "badge-primary";                // Expert
+    if (rating < 2100) return "badge-warning";                // Candidate Master
+    if (rating < 2400) return "badge-warning";                // Master & International Master
+    return "badge-danger";                                    // Grandmaster+
 }
 
 // ── Date / Time ──

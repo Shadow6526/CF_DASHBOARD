@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-    FiUser, FiTrendingUp, FiTarget, FiClock, FiAward, FiActivity,
-    FiCheck, FiX, FiSearch, FiFilter, FiBarChart2, FiPieChart,
+    FiUser, FiTrendingUp, FiTarget, FiAward, FiActivity,
+    FiCheck, FiX, FiBarChart2, FiPieChart,
     FiArrowLeft, FiCalendar
 } from "react-icons/fi";
 import { ActivityCalendar } from 'react-activity-calendar';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+    XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend,
     AreaChart, Area
 } from "recharts";
@@ -17,8 +17,8 @@ import {
     getCachedRating, setCachedRating, getCachedSubmissions, setCachedSubmissions
 } from "../../utils/storage";
 import {
-    getRatingColor, getRankName, formatDate, formatDateTime,
-    getVerdictInfo, getDifficultyColor, timeAgo
+    getRatingColor, getRankName, formatDate,
+    getVerdictInfo, getDifficultyColor
 } from "../../utils/helpers";
 import "./Profile.css";
 
@@ -129,6 +129,13 @@ export default function Profile() {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedYear, setSelectedYear] = useState("last12");
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         if (!handle) {
@@ -322,11 +329,13 @@ export default function Profile() {
     const { heatmapData, heatmapMonths } = useMemo(() => {
         if (!submissions.length) return { heatmapData: [], heatmapMonths: [] };
 
-        // Build date→count map once (reuses Date objects minimally)
+        // Build date→count maps (total + AC) in a single pass
         const counts = {};
+        const acCounts = {};
         const len = submissions.length;
         for (let i = 0; i < len; i++) {
-            const ts = submissions[i].creationTimeSeconds;
+            const s = submissions[i];
+            const ts = s.creationTimeSeconds;
             if (!ts) continue;
             const d = new Date(ts * 1000);
             const y = d.getFullYear();
@@ -335,6 +344,9 @@ export default function Profile() {
             // Fast string key without padStart
             const dateStr = `${y}-${m < 10 ? '0' : ''}${m}-${day < 10 ? '0' : ''}${day}`;
             counts[dateStr] = (counts[dateStr] || 0) + 1;
+            if (s.verdict === 'OK') {
+                acCounts[dateStr] = (acCounts[dateStr] || 0) + 1;
+            }
         }
 
         // Generate day range and group by month simultaneously
@@ -363,8 +375,9 @@ export default function Profile() {
             const dateStr = `${y}-${mPad < 10 ? '0' : ''}${mPad}-${day < 10 ? '0' : ''}${day}`;
 
             const count = counts[dateStr] || 0;
+            const ac = acCounts[dateStr] || 0;
             const level = count >= 10 ? 4 : count >= 6 ? 3 : count >= 3 ? 2 : count > 0 ? 1 : 0;
-            const item = { date: dateStr, count, level };
+            const item = { date: dateStr, count, level, ac };
             data.push(item);
 
             // Group into months inline — no re-parsing needed
@@ -536,9 +549,6 @@ export default function Profile() {
                                                         dark: ['#282828', '#004b1c', '#006d32', '#26a641', '#39d353']
                                                     }}
                                                     colorScheme="dark"
-                                                    labels={{
-                                                        tooltip: '<strong>{{count}} submissions</strong> on {{date}}'
-                                                    }}
                                                     blockRadius={2}
                                                     blockSize={13}
                                                     blockMargin={3}
@@ -548,10 +558,16 @@ export default function Profile() {
                                                     showWeekdayLabels={false}
                                                     renderBlock={(block, activity) => {
                                                         const m = new Date(activity.date).getMonth();
+                                                        const ac = activity.ac || 0;
+                                                        const titleText = activity.count > 0
+                                                            ? `${activity.count} submissions, ${ac} AC ✔ on ${activity.date}`
+                                                            : `No submissions on ${activity.date}`;
                                                         return React.cloneElement(block, {
                                                             "data-month": m,
                                                             "data-is-even-month": m % 2 === 0,
-                                                        });
+                                                        }, [
+                                                            <title key="t">{titleText}</title>
+                                                        ]);
                                                     }}
                                                 />
                                             </div>
@@ -629,14 +645,14 @@ export default function Profile() {
                         {/* Verdict Distribution */}
                         <div className="chart-card glass-card">
                             <h3 className="chart-title"><FiPieChart /> Verdict Distribution</h3>
-                            <ResponsiveContainer width="100%" height={450}>
+                            <ResponsiveContainer width="100%" height={isMobile ? 360 : 450}>
                                 <PieChart>
                                     <Pie
                                         data={stats.verdictData}
-                                        cx="55%"
-                                        cy="50%"
-                                        innerRadius={110}
-                                        outerRadius={180}
+                                        cx={isMobile ? "50%" : "55%"}
+                                        cy={isMobile ? "35%" : "50%"}
+                                        innerRadius={isMobile ? "45%" : 110}
+                                        outerRadius={isMobile ? "65%" : 180}
                                         paddingAngle={2}
                                         dataKey="value"
                                     >
@@ -646,10 +662,10 @@ export default function Profile() {
                                     </Pie>
                                     <Tooltip content={<VerdictTooltip />} />
                                     <Legend
-                                        layout="vertical"
-                                        align="left"
-                                        verticalAlign="middle"
-                                        formatter={(value, entry) => (
+                                        layout={isMobile ? "horizontal" : "vertical"}
+                                        align={isMobile ? "center" : "left"}
+                                        verticalAlign={isMobile ? "bottom" : "middle"}
+                                        formatter={(value) => (
                                             <span style={{ color: "#94a3b8", fontSize: "13px" }}>{value}</span>
                                         )}
                                     />
@@ -660,14 +676,14 @@ export default function Profile() {
                         {/* Language Distribution */}
                         <div className="chart-card glass-card">
                             <h3 className="chart-title"><FiPieChart /> Languages Used</h3>
-                            <ResponsiveContainer width="100%" height={450}>
+                            <ResponsiveContainer width="100%" height={isMobile ? 360 : 450}>
                                 <PieChart>
                                     <Pie
                                         data={stats.topLangs}
-                                        cx="55%"
-                                        cy="50%"
-                                        innerRadius={110}
-                                        outerRadius={180}
+                                        cx={isMobile ? "50%" : "55%"}
+                                        cy={isMobile ? "35%" : "50%"}
+                                        innerRadius={isMobile ? "45%" : 110}
+                                        outerRadius={isMobile ? "65%" : 180}
                                         paddingAngle={2}
                                         dataKey="value"
                                     >
@@ -677,10 +693,10 @@ export default function Profile() {
                                     </Pie>
                                     <Tooltip content={<LangTooltip />} />
                                     <Legend
-                                        layout="vertical"
-                                        align="left"
-                                        verticalAlign="middle"
-                                        formatter={(value, entry) => (
+                                        layout={isMobile ? "horizontal" : "vertical"}
+                                        align={isMobile ? "center" : "left"}
+                                        verticalAlign={isMobile ? "bottom" : "middle"}
+                                        formatter={(value) => (
                                             <span style={{ color: "#94a3b8", fontSize: "13px" }}>{value}</span>
                                         )}
                                     />

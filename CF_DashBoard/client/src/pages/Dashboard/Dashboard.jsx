@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-    FiSearch, FiTrendingUp, FiClock, FiTarget, FiStar, FiArrowRight,
-    FiZap, FiAward, FiUsers, FiCalendar, FiX
+    FiSearch, FiTrendingUp, FiStar, FiArrowRight,
+    FiZap, FiAward, FiUsers, FiX
 } from "react-icons/fi";
-import { SiCodeforces } from "react-icons/si";
-import { fetchUserInfo, fetchContests } from "../../utils/api";
+import { fetchUserInfo } from "../../utils/api";
 import {
     getSavedHandles, addSavedHandle, removeSavedHandle,
-    getActiveHandle, setActiveHandle, getCachedUser, setCachedUser
+    setActiveHandle, getCachedUser, setCachedUser
 } from "../../utils/storage";
-import { getRatingColor, getRankName, formatDate, getContestPhase, timeAgo } from "../../utils/helpers";
+import { getRatingColor, getRankName } from "../../utils/helpers";
 import "./Dashboard.css";
 
 export default function Dashboard() {
@@ -18,14 +17,11 @@ export default function Dashboard() {
     const [handle, setHandle] = useState("");
     const [savedHandles, setSavedHandles] = useState([]);
     const [userProfiles, setUserProfiles] = useState({});
-    const [upcomingContests, setUpcomingContests] = useState([]);
-    const [recentContests, setRecentContests] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
     useEffect(() => {
         setSavedHandles(getSavedHandles());
-        loadContests();
     }, []);
 
     useEffect(() => {
@@ -44,23 +40,10 @@ export default function Dashboard() {
             const data = await fetchUserInfo(h);
             setCachedUser(h, data);
             setUserProfiles((prev) => ({ ...prev, [h]: data }));
-        } catch { }
+        } catch (err) { console.error("Failed to load profile:", err); }
     }
 
-    async function loadContests() {
-        try {
-            const all = await fetchContests();
-            const upcoming = all
-                .filter((c) => c.phase === "BEFORE")
-                .sort((a, b) => b.startTimeSeconds - a.startTimeSeconds)
-                .slice(0, 5);
-            const recent = all
-                .filter((c) => c.phase === "FINISHED")
-                .slice(0, 5);
-            setUpcomingContests(upcoming);
-            setRecentContests(recent);
-        } catch { }
-    }
+
 
     async function handleSearch(e) {
         e.preventDefault();
@@ -74,7 +57,9 @@ export default function Dashboard() {
             setSavedHandles(getSavedHandles());
             navigate("/profile");
         } catch (err) {
-            setError(err.response?.data?.comment || "User not found");
+            console.error("Search failed:", err);
+            const msg = err.response?.data?.comment || err.response?.data?.message || err.message || "Failed to load user. Please try again.";
+            setError(msg);
         } finally {
             setLoading(false);
         }

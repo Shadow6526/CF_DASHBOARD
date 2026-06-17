@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { FiSearch, FiHome, FiUser, FiTrendingUp } from "react-icons/fi";
+import { FiHome, FiUser, FiTrendingUp } from "react-icons/fi";
 import { SiCodeforces } from "react-icons/si";
 import "./TopBar.css";
 

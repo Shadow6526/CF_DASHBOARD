@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Login - Library Management System{% endblock %}
+{% block title %}Login — IIIT Surat Library{% endblock %}
 
 {% block content %}
 <div class="login-container glass-panel" style="max-width: 420px; width: 100%; padding: 40px;">
     <div style="text-align: center; margin-bottom: 30px;">
-        <i class="fa-solid fa-book-open logo-icon" style="font-size: 48px;"></i>
-        <h2 class="logo-text" style="font-size: 32px; margin-top: 16px;">LibSys Login</h2>
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="IIIT Surat" style="width: 72px; height: auto; margin-bottom: 8px;">
+        <h2 class="logo-text" style="font-size: 26px; margin-top: 12px;">IIIT Surat Library Login</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Enter your credentials to continue</p>
     </div>
 
     <form method="POST" action="{{ url_for('login') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required

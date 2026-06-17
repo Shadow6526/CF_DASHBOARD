@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiUsers, FiTrendingUp, FiCheck, FiArrowRight, FiTarget, FiActivity } from "react-icons/fi";
+import { FiUsers, FiTrendingUp, FiArrowRight, FiTarget, FiActivity } from "react-icons/fi";
 import { fetchUserInfo, fetchUserRating, fetchUserSubmissions } from "../../utils/api";
 import { getRatingColor, getRankName } from "../../utils/helpers";
 import "./Compare.css";
@@ -86,26 +86,33 @@ export default function Compare() {
     }
 
     // Helper for coloring wins
-    const renderComparisonRow = (label, val1, val2, higherIsBetter = true) => {
+    const renderComparisonRow = (label, val1, val2, higherIsBetter = true, formatFn) => {
+        // Parse numeric value for comparison (strips non-numeric chars like % or +)
+        const num1 = typeof val1 === 'number' ? val1 : parseFloat(String(val1).replace(/[^\d.-]/g, '')) || 0;
+        const num2 = typeof val2 === 'number' ? val2 : parseFloat(String(val2).replace(/[^\d.-]/g, '')) || 0;
+
         let v1Better = false;
         let v2Better = false;
 
         if (higherIsBetter) {
-            if (val1 > val2) v1Better = true;
-            if (val2 > val1) v2Better = true;
+            if (num1 > num2) v1Better = true;
+            if (num2 > num1) v2Better = true;
         } else {
-            if (val1 < val2) v1Better = true;
-            if (val2 < val1) v2Better = true;
+            if (num1 < num2) v1Better = true;
+            if (num2 < num1) v2Better = true;
         }
+
+        const display1 = formatFn ? formatFn(val1) : val1;
+        const display2 = formatFn ? formatFn(val2) : val2;
 
         return (
             <div className="compare-row">
                 <div className={`compare-val left ${v1Better ? 'winner' : ''}`}>
-                    {val1}
+                    {display1}
                 </div>
                 <div className="compare-label">{label}</div>
                 <div className={`compare-val right ${v2Better ? 'winner' : ''}`}>
-                    {val2}
+                    {display2}
                 </div>
             </div>
         );
@@ -194,14 +201,14 @@ export default function Compare() {
                     <div className="compare-section glass-card">
                         <h3 className="section-title"><FiTarget /> Problem Solving</h3>
                         {renderComparisonRow("Problems Solved", stats.u1.stats.solved, stats.u2.stats.solved)}
-                        {renderComparisonRow("Acceptance Rate", `${stats.u1.stats.acceptRate}%`, `${stats.u2.stats.acceptRate}%`)}
+                        {renderComparisonRow("Acceptance Rate", stats.u1.stats.acceptRate, stats.u2.stats.acceptRate, true, (v) => `${v}%`)}
                         {renderComparisonRow("Total Submissions", stats.u1.stats.totalSubmissions, stats.u2.stats.totalSubmissions)}
                     </div>
 
                     <div className="compare-section glass-card">
                         <h3 className="section-title"><FiActivity /> Contest Performance</h3>
                         {renderComparisonRow("Contests Attended", stats.u1.stats.contests, stats.u2.stats.contests)}
-                        {renderComparisonRow("Max Rating Jump", `+${stats.u1.stats.maxUp}`, `+${stats.u2.stats.maxUp}`)}
+                        {renderComparisonRow("Max Rating Jump", stats.u1.stats.maxUp, stats.u2.stats.maxUp, true, (v) => `+${v}`)}
                         {renderComparisonRow("Max Rating Drop", Math.abs(stats.u1.stats.maxDown), Math.abs(stats.u2.stats.maxDown), false)}
                     </div>
                 </div>

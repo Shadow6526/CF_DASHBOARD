@@ -4,6 +4,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Profile from "./pages/Profile/Profile";
 import Contests from "./pages/Contests/Contests";
 import Compare from "./pages/Compare/Compare";
+import Problems from "./pages/Problems/Problems";
+import Bookmarks from "./pages/Bookmarks/Bookmarks";
 import "./App.css";
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/contests" element={<Contests />} />
               <Route path="/compare" element={<Compare />} />
+              <Route path="/problems" element={<Problems />} />
+              <Route path="/bookmarks" element={<Bookmarks />} />
             </Routes>
           </main>
         </div>

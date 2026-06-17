@@ -8,6 +8,7 @@
     <form method="POST" action="{{ url_for('manage_books') }}"
         style="display: grid; grid-template-columns: 1fr 1fr 1fr 100px auto; gap: 16px; align-items: end;">
         <input type="hidden" name="action" value="add">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <div class="form-group" style="margin-bottom: 0;">
             <label>Title</label>
@@ -55,14 +56,20 @@
                     <td><strong>{{ book.available_copies }}</strong></td>
                     <td style="display: flex; gap: 8px;">
                         <!-- Edit Button triggers modal -->
-                        <button class="btn" style="padding: 6px 12px; font-size: 13px;"
-                            onclick="openEditModal({{ book.id }}, '{{ book.title }}', '{{ book.author }}', '{{ book.isbn }}', {{ book.total_copies }})">
+                        <button class="btn btn-edit" style="padding: 6px 12px; font-size: 13px; background: var(--accent-blue);"
+                            data-id="{{ book.id }}"
+                            data-title="{{ book.title }}"
+                            data-author="{{ book.author }}"
+                            data-isbn="{{ book.isbn }}"
+                            data-total="{{ book.total_copies }}"
+                            onclick="handleEditClick(this)">
                             <i class="fa-solid fa-pen"></i> Edit
                         </button>
                         <!-- Delete Form -->
                         <form method="POST" action="{{ url_for('manage_books') }}" style="margin: 0;">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="book_id" value="{{ book.id }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 13px;"
                                 onclick="return confirm('Are you sure?')">
                                 <i class="fa-solid fa-trash"></i>
@@ -88,6 +95,7 @@
         <form method="POST" action="{{ url_for('manage_books') }}">
             <input type="hidden" name="action" value="edit">
             <input type="hidden" name="book_id" id="edit-book-id">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-group">
                 <label>Title</label>
                 <input type="text" name="title" id="edit-title" class="form-control" required>
@@ -113,6 +121,14 @@
 </div>
 
 <script>
+    function handleEditClick(btn) {
+        const id = btn.getAttribute('data-id');
+        const title = btn.getAttribute('data-title');
+        const author = btn.getAttribute('data-author');
+        const isbn = btn.getAttribute('data-isbn');
+        const total = btn.getAttribute('data-total');
+        openEditModal(id, title, author, isbn, total);
+    }
     function openEditModal(id, title, author, isbn, copies) {
         document.getElementById('edit-book-id').value = id;
         document.getElementById('edit-title').value = title;

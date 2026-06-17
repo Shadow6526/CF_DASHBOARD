@@ -24,6 +24,7 @@
                         <form method="POST" action="{{ url_for('approve_students') }}" style="margin: 0;">
                             <input type="hidden" name="user_id" value="{{ user.id }}">
                             <input type="hidden" name="action" value="approve">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn"
                                 style="padding: 6px 14px; font-size: 13px; background: var(--accent-green);">
                                 <i class="fa-solid fa-check"></i> Approve
@@ -32,6 +33,7 @@
                         <form method="POST" action="{{ url_for('approve_students') }}" style="margin: 0;">
                             <input type="hidden" name="user_id" value="{{ user.id }}">
                             <input type="hidden" name="action" value="reject">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-danger" style="padding: 6px 14px; font-size: 13px;"
                                 onclick="return confirm('Reject this student?')">
                                 <i class="fa-solid fa-xmark"></i> Reject

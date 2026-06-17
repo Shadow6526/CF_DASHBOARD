@@ -1,14 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Welcome to LibSys{% endblock %}
+{% block title %}Welcome — IIIT Surat Library{% endblock %}
 {% block content %}
 <div class="glass-panel" style="max-width: 600px; width: 100%; padding: 60px 40px; text-align: center;">
-    <i class="fa-solid fa-book-open logo-icon" style="font-size: 64px; margin-bottom: 24px;"></i>
-    <h1
-        style="font-size: 42px; margin: 0 0 16px 0; background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-        LibSys Explorer</h1>
-    <p style="color: var(--text-muted); font-size: 18px; margin-bottom: 40px; line-height: 1.6;">
-        A modern, simple, and elegant library management system built with Flask and Python. Manage books, issues, track
-        fines, and monitor activity effortlessly.
+    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="IIIT Surat" style="width: 90px; height: auto; margin-bottom: 20px;">
+    <h1 style="font-size: 36px; margin: 0 0 16px 0; color: var(--text-primary); font-weight: 800;">
+        IIIT Surat Library</h1>
+    <p style="color: var(--text-secondary); font-size: 17px; margin-bottom: 40px; line-height: 1.6;">
+        A modern library management system for IIIT Surat. Manage books, track issues & fines, and monitor activity
+        effortlessly.
     </p>
 
     <div style="display: flex; gap: 16px; justify-content: center;">

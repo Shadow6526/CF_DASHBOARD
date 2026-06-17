@@ -117,8 +117,8 @@ app.get("/api/health", (req, res) => {
     res.json({ status: "OK", uptime: process.uptime() });
 });
 
-// For local server:
-if (process.env.NODE_ENV !== "production") {
+// For local server (only when NOT running on Vercel):
+if (!process.env.VERCEL) {
     app.listen(PORT, () => {
         console.log(`🚀 API running locally on http://localhost:${PORT}`);
     });
