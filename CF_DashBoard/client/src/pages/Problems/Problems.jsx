@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import {
-    FiList, FiSearch, FiFilter, FiBookmark, FiExternalLink,
-    FiChevronLeft, FiChevronRight, FiStar
+    FiList, FiSearch, FiBookmark, FiExternalLink,
+    FiChevronLeft, FiChevronRight
 } from "react-icons/fi";
 import { fetchProblemset } from "../../utils/api";
-import { toggleBookmarkProblem, isBookmarked, getBookmarkedProblems } from "../../utils/storage";
+import { toggleBookmarkProblem, isBookmarked } from "../../utils/storage";
 import { getDifficultyColor } from "../../utils/helpers";
 import "./Problems.css";
 
@@ -21,7 +21,6 @@ export default function Problems() {
     const [selectedTags, setSelectedTags] = useState([]);
     const [diffRange, setDiffRange] = useState([800, 3500]);
     const [page, setPage] = useState(1);
-    const [bookmarks, setBookmarks] = useState(getBookmarkedProblems());
     const perPage = 30;
 
     useEffect(() => {
@@ -46,8 +45,7 @@ export default function Problems() {
     }
 
     function handleBookmark(problem) {
-        const updated = toggleBookmarkProblem(problem);
-        setBookmarks(updated);
+        toggleBookmarkProblem(problem);
     }
 
     const filtered = useMemo(() => {
@@ -124,7 +122,7 @@ export default function Problems() {
                         value={diffRange[0]}
                         onChange={(e) => setDiffRange([parseInt(e.target.value), diffRange[1]])}
                     >
-                        {[800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400].map((v) => (
+                        {[800, 1000, 1200,1300,1400,1500, 1600,1700, 1800, 1900,2000,2100, 2200,2300, 2400,2500].map((v) => (
                             <option key={v} value={v}>{v}</option>
                         ))}
                     </select>
@@ -134,7 +132,7 @@ export default function Problems() {
                         value={diffRange[1]}
                         onChange={(e) => setDiffRange([diffRange[0], parseInt(e.target.value)])}
                     >
-                        {[1200, 1400, 1600, 1800, 2000, 2200, 2400, 2800, 3200, 3500].map((v) => (
+                        {[800, 1000, 1200,1300,1400,1500, 1600,1700, 1800, 1900,2000,2100, 2200,2300, 2400,2500].map((v) => (
                             <option key={v} value={v}>{v}</option>
                         ))}
                     </select>

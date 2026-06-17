@@ -30,11 +30,15 @@
 }
 
 .diff-select {
-    width: 100px;
-    padding: 8px 12px;
-    font-size: 13px;
+    background-color: #1a1a1a; /* Matte Black */
+    color: #ffffff;            /* White text */
+    border: 1px solid #333;
 }
 
+.diff-select option {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
 /* Tag Filters */
 .tag-filters {
     display: flex;
